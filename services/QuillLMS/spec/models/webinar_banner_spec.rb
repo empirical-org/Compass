@@ -9,9 +9,21 @@ describe WebinarBanner, type: :model do
   end
 
   it 'does return false for show? when the user has no subscription and the banner is subscription only' do
-    time =  DateTime.new(2020,3,17,16,1,0)
+    time =  DateTime.new(2021,3,10,16,1,0)
     banner = WebinarBanner.new(time)
     expect(banner.show?(false)).to eq(false)
+  end
+
+  it "does return false for show when the banner is only second and fourth out of the month and its the first week" do
+    time =  DateTime.new(2021,3,3,16,0,0)
+    banner = WebinarBanner.new(time)
+    expect(banner.show?(true)).to eq(false)
+  end
+
+  it "does return true for show when the banner is only second and fourth out of the month and its the second week" do
+    time =  DateTime.new(2021,3,10,16,0,0)
+    banner = WebinarBanner.new(time)
+    expect(banner.show?(true)).to eq(true)
   end
 
   it "does return no link or title when the key does not have an associated webinar" do
