@@ -81,9 +81,12 @@ export default class ClassroomActivity extends React.Component {
 
   calculateAverageScore = () => {
     const { data, } = this.props
+    const DIAGNOSTIC_ACTIVITY_CLASSIFICATION_ID = '4'
     const averageScore = data.cumulativeScore / data.completedCount;
     if (isNaN(averageScore)) {
       return '—';
+    } else if (data.activityClassificationId == DIAGNOSTIC_ACTIVITY_CLASSIFICATION_ID) {
+      return 'N/A'
     } else if (Math.round(averageScore).toString().length === 2) {
       return `${averageScore.toPrecision(2)}%`;
     }
@@ -322,6 +325,7 @@ export default class ClassroomActivity extends React.Component {
   }
 
   render = () => {
+    console.log("classroom activity rendered")
     const { activityReport, report, } = this.props
     let link,
       endRow;
