@@ -57,6 +57,7 @@ export default class extends React.Component {
   }
 
   score(row) {
+    console.log(row)
     if (row.completed_at && !notLessonsOrDiagnostic(row.activity_classification_id)) {
       return {content: 'Completed', color: 'blue'}
     } else if (row.percentage) {
