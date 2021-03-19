@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import Pluralize from 'pluralize';
 import activityFromClassificationId from '../../modules/activity_from_classification_id.js';
+import { Tooltip } from '../../../../Shared/index'
 
 import PreviewOrLaunchModal from '../../shared/preview_or_launch_modal';
 
@@ -86,7 +87,10 @@ export default class ClassroomActivity extends React.Component {
     if (isNaN(averageScore)) {
       return '—';
     } else if (data.activityClassificationId == DIAGNOSTIC_ACTIVITY_CLASSIFICATION_ID) {
-      return 'N/A'
+      return (<Tooltip
+        tooltipText={`This type of activity is not graded.`}
+        tooltipTriggerText="N/A"
+      />)
     } else if (Math.round(averageScore).toString().length === 2) {
       return `${averageScore.toPrecision(2)}%`;
     }
