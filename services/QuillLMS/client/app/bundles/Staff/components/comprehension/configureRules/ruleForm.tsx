@@ -24,6 +24,8 @@ interface RuleFormProps {
   universalRuleType?: string
 }
 
+// test comment
+
 const RuleForm = ({ activityData, activityId, closeModal, isUniversal, rule, submitRule, universalRuleType }: RuleFormProps) => {
 
   const { name, rule_type, id, optimal, plagiarism_text, concept_uid, description, feedbacks } = rule;
