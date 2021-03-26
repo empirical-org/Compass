@@ -45,7 +45,7 @@ gem 'rubyzip'
 # Vendoring this gem locally since they keep pulling it
 # due to licensing issues
 # Reference: https://github.com/mimemagicrb/mimemagic/issues/98
-gem 'mimemagic', '0.3.9', :path => 'vendor/gems/mimemagic-0.3.9'
+gem 'mimemagic', '0.3.9', path: 'vendor/gems/mimemagic-0.3.9'
 
 # WEBSOCKETS
 gem 'pusher'
