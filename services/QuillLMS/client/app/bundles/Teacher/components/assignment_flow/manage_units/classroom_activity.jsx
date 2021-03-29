@@ -329,7 +329,6 @@ export default class ClassroomActivity extends React.Component {
   }
 
   render = () => {
-    console.log("classroom activity rendered")
     const { activityReport, report, } = this.props
     let link,
       endRow;
