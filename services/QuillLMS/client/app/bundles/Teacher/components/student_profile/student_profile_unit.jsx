@@ -1,7 +1,7 @@
 import * as React from 'react'
 import moment from 'moment'
 
-import { DataTable } from '../../../Shared/index'
+import { DataTable, Tooltip } from '../../../Shared/index'
 import activityLaunchLink from '../modules/generate_activity_launch_link.js';
 
 const diagnosticSrc = `${process.env.CDN_URL}/images/icons/tool-diagnostic-gray.svg`
@@ -58,8 +58,8 @@ const completeHeaders = [
     name: 'Score',
     attribute: 'score',
     noTooltip: true,
-    headerClassName: 'score-section',
-    rowSectionClassName: 'score-section'
+    headerClassName: 'score-section tooltip-section',
+    rowSectionClassName: 'score-section tooltip-section'
   }, {
     width: '24px',
     name: 'Tool',
@@ -117,7 +117,11 @@ export default class StudentProfileUnit extends React.Component {
     const { activity_classification_id, max_percentage, } = act
     const maxPercentage = Number(max_percentage)
     if (activity_classification_id === DIAGNOSTIC_ACTIVITY_CLASSIFICATION_ID || activity_classification_id === LESSONS_ACTIVITY_CLASSIFICATION_ID) {
-      return (<div className="score"><div className="completed" /><span>Completed</span></div>)
+      return (<div className="score"><div className="completed" /><span>
+        <Tooltip
+        tooltipText={`This type of activity is not graded.`}
+        tooltipTriggerText="Completed"
+      /></span></div>)
     }
 
     if (maxPercentage >= PROFICIENT_CUTOFF) {

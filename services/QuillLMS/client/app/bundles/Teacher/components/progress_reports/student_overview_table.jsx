@@ -4,6 +4,7 @@ import moment from 'moment'
 import gradeColor from '../modules/grade_color.js'
 import notLessonsOrDiagnostic from '../../../../modules/activity_classifications.js'
 import userIsPremium from '../modules/user_is_premium'
+import { Tooltip } from '../../../Shared/index'
 
 export default class extends React.Component {
 
@@ -57,7 +58,6 @@ export default class extends React.Component {
   }
 
   score(row) {
-    console.log(row)
     if (row.completed_at && !notLessonsOrDiagnostic(row.activity_classification_id)) {
       return {content: 'Completed', color: 'blue'}
     } else if (row.percentage) {

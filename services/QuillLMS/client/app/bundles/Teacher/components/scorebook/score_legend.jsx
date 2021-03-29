@@ -1,6 +1,7 @@
 'use strict';
 import React from 'react'
 import {proficiencyCutoffsAsPercentage} from '../../../../modules/proficiency_cutoffs.js'
+import { Tooltip } from '../../../Shared/index'
 
 export default class extends React.Component {
   render() {
@@ -32,7 +33,10 @@ export default class extends React.Component {
             <div className="icon">
               <div className="icon-wrapper icon-blue" />
               <div className="icons-description-wrapper">
-                <p className="title">Completed</p>
+                <Tooltip
+                  tooltipText={`This type of activity is not graded.`}
+                  tooltipTriggerText="Completed"
+                />
                 <p className="explanation"></p>
               </div>
             </div>
