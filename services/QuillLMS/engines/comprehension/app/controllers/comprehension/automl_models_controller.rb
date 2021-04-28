@@ -59,7 +59,7 @@ module Comprehension
     end
 
     private def automl_model_params
-      params.require(:automl_model).permit(:automl_model_id, :prompt_id)
+      params.require(:automl_model).permit(:automl_model_id, :prompt_id, :note)
     end
   end
 end

@@ -53,7 +53,7 @@ module Comprehension
       should "create a valid record and return it as json" do
         AutomlModel.stub_any_instance(:automl_name, @automl_model.name) do
           AutomlModel.stub_any_instance(:automl_labels, @automl_model.labels) do
-            post :create, automl_model: { prompt_id: @automl_model.prompt_id, automl_model_id: @automl_model.automl_model_id }
+            post :create, automl_model: { prompt_id: @automl_model.prompt_id, automl_model_id: @automl_model.automl_model_id, note: @automl_model.note }
           end
         end
 
@@ -64,6 +64,8 @@ module Comprehension
         assert_equal @automl_model.automl_model_id, parsed_response['automl_model_id']
 
         assert_equal @automl_model.name, parsed_response['name']
+
+        assert_equal @automl_model.note, parsed_response['note']
 
         assert_equal @automl_model.prompt_id, parsed_response['prompt_id']
 
@@ -119,6 +121,8 @@ module Comprehension
 
         assert_equal @automl_model.name, parsed_response['name']
 
+        assert_equal @automl_model.note, parsed_response['note']
+
         assert_equal @automl_model.prompt_id, parsed_response['prompt_id']
 
         assert_equal @automl_model.state, parsed_response['state']
@@ -143,7 +147,8 @@ module Comprehension
         # NOTE: Only prompt_id is available to change during an update call
         @new_prompt = create(:comprehension_prompt)
         new_prompt_id = @new_prompt_id
-        patch :update, id: @automl_model.id, automl_model: { prompt_id: new_prompt_id }
+        new_note = 'new note text for this model'
+        patch :update, id: @automl_model.id, automl_model: { prompt_id: new_prompt_id, note: new_note}
 
         assert_equal "", response.body
         assert_equal 204, response.code.to_i
@@ -151,6 +156,7 @@ module Comprehension
         @automl_model.reload
 
         assert_equal new_prompt_id, @automl_model.prompt_id
+        assert_equal new_note, @automl_model.note
       end
 
       should "not update read-only attributes return empty 204" do

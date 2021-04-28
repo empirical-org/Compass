@@ -128,6 +128,7 @@ module Comprehension
           id: automl_model.id,
           automl_model_id: automl_model.automl_model_id,
           name: automl_model.name,
+          note: automl_model.note,
           labels: automl_model.labels,
           state: automl_model.state,
           created_at: automl_model.created_at,
