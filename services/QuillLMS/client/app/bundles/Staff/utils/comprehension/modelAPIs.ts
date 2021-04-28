@@ -26,6 +26,15 @@ export const createModel = async (autoMLId: string, promptId: number) => {
   return { error: handleApiError('Failed to create model, please try again.', response), model: newModel };
 }
 
+export const updateModel = async (modelId: number, note: string) => {
+  const response = await apiFetch(`automl_models/${modelId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ note: note })
+  })
+  const updatedModel = await response.json();
+  return { error: handleApiError('Failed to create model, please try again.', response), model: updatedModel };
+}
+
 export const activateModel = async(modelId: string) => {
   const response = await apiFetch(`automl_models/${modelId}/activate`, {
     method: 'PUT',

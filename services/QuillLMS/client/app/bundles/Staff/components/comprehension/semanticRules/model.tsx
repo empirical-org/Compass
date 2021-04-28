@@ -3,14 +3,14 @@ import { useQuery } from 'react-query';
 import { withRouter, Link } from 'react-router-dom';
 import { EditorState, ContentState } from 'draft-js';
 
-import { fetchModel } from '../../../utils/comprehension/modelAPIs';
+import { fetchModel, updateModel } from '../../../utils/comprehension/modelAPIs';
 import { DataTable, Spinner, TextEditor } from '../../../../Shared/index';
 
 const Model = ({ match }) => {
   const { params } = match;
   const { activityId, modelId } = params;
 
-  // const [modelNotes, setModelNotes] = React.useState<string>('');
+  const [modelNotes, setModelNotes] = React.useState<string>('');
   const [errors, setErrors] = React.useState<object>({});
 
   // cache ruleSets data for handling rule suborder
@@ -19,11 +19,11 @@ const Model = ({ match }) => {
     queryFn: fetchModel
   });
 
-  // function handleSetModelNotes(text: string){ setModelNotes(text) };
+  function handleSetModelNotes(text: string){ setModelNotes(text) };
 
-  // function onHandleUpdateModel() {
-
-  // }
+  function onHandleUpdateModel() {
+    updateModel(id: modelId, note: modelNotes)
+  }
 
   function upperSectionRows ({ model }) {
     if(!model) {
@@ -85,8 +85,8 @@ const Model = ({ match }) => {
     { name: "Descriptive Label", attribute:"field", width: "200px" },
     { name: "AutoML Label", attribute:"value", width: "400px" }
   ];
-  // const modelNotesStyle = modelNotes && modelNotes.length && modelNotes !== '<br/>' ? 'has-text' : '';
-  // const errorsPresent = !!Object.keys(errors).length;
+  const modelNotesStyle = modelNotes && modelNotes.length && modelNotes !== '<br/>' ? 'has-text' : '';
+  const errorsPresent = !!Object.keys(errors).length;
 
   if(!modelData) {
     return(
@@ -105,7 +105,7 @@ const Model = ({ match }) => {
           headers={upperDataTableFields}
           rows={upperSectionRows(modelData)}
         />
-        {/* <p className={`text-editor-label ${modelNotesStyle}`}>Model Notes</p>
+        <p className={`text-editor-label ${modelNotesStyle}`}>Model Notes</p>
         <TextEditor
           disabled={true}
           ContentState={ContentState}
@@ -113,21 +113,21 @@ const Model = ({ match }) => {
           handleTextChange={handleSetModelNotes}
           key="model-notes"
           text={modelNotes}
-        /> */}
+        />
         <DataTable
           className="model-table"
           headers={lowerDataTableFields}
           rows={lowerSectionRows(modelData)}
         />
       </section>
-      {/* <div className="submit-button-container">
+      <div className="submit-button-container">
         {errorsPresent && <div className="error-message-container">
           <p className="all-errors-message">Failed to updated model notes.</p>
         </div>}
         <button className="quill-button fun primary contained" id="rule-submit-button" onClick={onHandleUpdateModel} type="button">
           Submit
         </button>
-      </div> */}
+      </div>
     </div>
   );
 }

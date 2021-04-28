@@ -53,7 +53,7 @@ const ModelsTable = ({ activityId, prompt }) => {
     { name: "Created At", attribute:"created_at", width: "100px" },
     { name: "Version", attribute:"version", width: "70px" },
     { name: "Model Name", attribute:"name", width: "300px" },
-    // { name: "Model Notes", attribute:"", width: "200px" },
+    { name: "Model Notes", attribute:"note", width: "200px" },
     { name: "Label Count", attribute:"label_count", width: "70px" },
     { name: "Status", attribute:"status", width: "70px" },
     { name: "", attribute:"view", width: "100px" },
