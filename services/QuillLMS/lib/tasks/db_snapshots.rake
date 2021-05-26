@@ -34,6 +34,16 @@ namespace :db do
       system "rm quill_snapshot.dump quill_staging.dump"
     end
 
+    # To transfer analytics data to Bigquery
+    # Create a backup in Heroku
+    # Download that backup
+    # create an empty local database
+    # Run rake db:snapshots:analytics_restore[with proper file paths]
+    # Upload the exported folder of csv to google cloud (let this finish)
+    # Run rake db:snapshots:load_to_bigquery[with proper file paths]
+    # In the BigQuery console, make a copy of the lms dataset (as a backup)
+    # Delete the original 'lms' dataset
+    # Copy the new dataset to 'lms' (we are maintaining the same dataset name so Metabase queries work)
 
     # bundle exec rake db:snapshots:analytics_restore\[lms_snapshot_05_24_2021,/Volumes/my_passport/lms_data/2021-05-24/lms_data_dump_2021_05_24,/Volumes/my_passport/lms_data/2021-05-24/exports\]
     desc 'analytics restore tables'
@@ -49,7 +59,6 @@ namespace :db do
       run_cmd(up_timeout)
       # ensure hstore (used by activity sessions)
       create_hstore = "psql -U quill_dev -d #{db_name} -c \"CREATE EXTENSION hstore;\""
-
 
       RestoreAnalytics::TABLES_IN_ORDER.each do |table|
         puts "****************** Restoring '#{table}'' table from #{db_snapshot_path}"
@@ -84,7 +93,6 @@ namespace :db do
     end
 
     module RestoreAnalytics
-
       def run_cmd(command)
         stdout_str, stderr_str, status = Open3.capture3(command)
 
@@ -95,6 +103,7 @@ namespace :db do
 
       TABLES_IN_ORDER = %w(standard_levels standard_categories standards raw_scores activities unit_templates schools users schools_users classrooms students_classrooms subscriptions user_subscriptions units classroom_units activity_sessions)
 
+      # these get around problematic fields, such as json data or data the BigQuery imports incorrectly, e.g. strings that are all numbers except for 1 record, BigQuery assumes a number data type, then errors on the non-number one
       CUSTOM_EXPORT_SELECTS = {
         activities: "(SELECT id,name,description,uid,data->'flag' AS data_flag,data->'title' AS data_title,activity_classification_id,topic_id,created_at,updated_at,flags[1] AS flag, repeatable,follow_up_activity_id,supporting_info,standard_id,raw_score_id FROM activities)",
         users: "(SELECT id,role,created_at,updated_at,classcode,active,username,token,clever_id,signed_up_with_google,send_newsletter,google_id,last_sign_in,last_active,stripe_customer_id,flags,time_zone,title,account_type,post_google_classroom_assignments FROM users)",
