@@ -34,16 +34,8 @@ namespace :db do
       system "rm quill_snapshot.dump quill_staging.dump"
     end
 
-    # To transfer analytics data to Bigquery
-    # Create a backup in Heroku
-    # Download that backup
-    # create an empty local database
-    # Run rake db:snapshots:analytics_restore[with proper file paths]
-    # Upload the exported folder of csv to google cloud (let this finish)
-    # Run rake db:snapshots:load_to_bigquery[with proper file paths]
-    # In the BigQuery console, make a copy of the lms dataset (as a backup)
-    # Delete the original 'lms' dataset
-    # Copy the new dataset to 'lms' (we are maintaining the same dataset name so Metabase queries work)
+    # Instructions for data transfer here:
+    # https://www.notion.so/quill/Manual-LMS-BiqQuery-Data-Transfer-4734e3d07571493ab398e2f1a46e9477
 
     # bundle exec rake db:snapshots:analytics_restore\[lms_snapshot_05_24_2021,/Volumes/my_passport/lms_data/2021-05-24/lms_data_dump_2021_05_24,/Volumes/my_passport/lms_data/2021-05-24/exports\]
     desc 'analytics restore tables'
