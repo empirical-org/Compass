@@ -86,7 +86,7 @@ namespace :db do
 
       RestoreAnalytics::TABLES_IN_ORDER.each do |table|
         puts "****************** Importing '#{table}' to '#{dataset}' dataset"
-        command = "bq load --max_bad_records 100 --autodetect #{dataset}.#{table} #{cloud_file_path}/#{table}.csv"
+        command = "bq load --max_bad_records 100 --autodetect --allow_jagged_rows #{dataset}.#{table} #{cloud_file_path}/#{table}.csv"
 
         run_cmd(command)
       end
