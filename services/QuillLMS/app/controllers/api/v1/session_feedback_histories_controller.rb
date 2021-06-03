@@ -1,8 +1,9 @@
 class Api::V1::SessionFeedbackHistoriesController < Api::ApiController
-  # GET /feedback_histories.json?page=1&activity_id=33
+  # GET /feedback_histories.json?page=1&activity_id=33&start_date=2021-04-18T03:00:00.000Z&end_date=2021-05-18T03:00:00.000Z
   def index
     records = FeedbackHistory.list_by_activity_session(**params.permit(:page, :activity_id).symbolize_keys)
-
+    records = records.where("start_date >= ?", params[:start_date]) if params[:start_date]
+    records = records.where("start_date <= ?", params[:end_date]) if params[:end_date]
     count = FeedbackHistory.select(:feedback_session_uid).distinct.count
 
     render json: {
