@@ -1,6 +1,6 @@
 class RuleFeedbackHistory
     def self.generate_report(conjunction:, activity_id:, start_date:, end_date:)
-        sql_result = exec_query(conjunction: conjunction, activity_id: activity_id, start_date:, end_date:)
+        sql_result = exec_query(conjunction: conjunction, activity_id: activity_id, start_date: start_date, end_date: end_date)
         format_sql_results(sql_result)
     end
 
