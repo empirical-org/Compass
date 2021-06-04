@@ -178,8 +178,8 @@ class FeedbackHistory < ActiveRecord::Base
       .joins("LEFT OUTER JOIN comprehension_prompts ON feedback_histories.prompt_id = comprehension_prompts.id")
       .joins("LEFT OUTER JOIN feedback_history_ratings ON feedback_histories.id = feedback_history_ratings.feedback_history_id")
       .where(used: true)
-      .where("start_date >= ?", start_date)
-      .where("start_date <= ?", end_date)
+      .where("created_at >= ?", start_date)
+      .where("created_at <= ?", end_date)
       .group(:feedback_session_uid, :activity_id)
       .order('start_date DESC')
     query = query.where(comprehension_prompts: {activity_id: activity_id.to_i}) if activity_id
