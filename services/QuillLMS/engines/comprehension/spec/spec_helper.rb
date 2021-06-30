@@ -1,19 +1,9 @@
 require 'simplecov'
 require 'simplecov-json'
 require 'webmock/rspec'
-
+require 'factory_bot_rails'
 WebMock.disable_net_connect!
 
-RSpec.configure do |config|
-  config.formatter = :progress
-  config.expect_with :rspec do |expectations|
-    expectations.include_chain_clauses_in_custom_matcher_descriptions = true
-  end
-
-  config.mock_with :rspec do |mocks|
-    mocks.verify_partial_doubles = true
-  end
-end
 
 if ENV['CONTINUOUS_INTEGRATION'] == true
   SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
@@ -29,9 +19,25 @@ end
 
 
 
-require File.expand_path("../../test/dummy/config/environment.rb",  __FILE__)
-ActiveRecord::Migrator.migrations_paths = [File.expand_path("../../test/dummy/db/migrate", __FILE__)]
-ActiveRecord::Migrator.migrations_paths << File.expand_path('../../db/migrate', __FILE__)
+# if RUBY_VERSION>='2.6.0'
+#   if Rails.version < '5'
+#     class ActionController::TestResponse < ActionDispatch::TestResponse
+#       def recycle!
+#         # dirty solution to avoid MonitorMixin double-initialize error:
+#         @mon_mutex_owner_object_id = nil
+#         @mon_mutex = nil
+#         initialize
+#       end
+#     end
+#   else
+#     puts "Monkeypatch for ActionController::TestResponse no longer needed"
+#   end
+# end
+
+#require File.expand_path("../../test/dummy/config/environment.rb",  __FILE__)
+
+# ActiveRecord::Migrator.migrations_paths = [File.expand_path("../../test/dummy/db/migrate", __FILE__)]
+# ActiveRecord::Migrator.migrations_paths << File.expand_path('../../db/migrate', __FILE__)
 
 
 # Load support files

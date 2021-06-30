@@ -59,11 +59,11 @@ GEM
     diff-lcs (1.4.4)
     docile (1.4.0)
     erubis (2.7.0)
-    factory_bot (5.2.0)
-      activesupport (>= 4.2.0)
-    factory_bot_rails (5.2.0)
-      factory_bot (~> 5.2.0)
-      railties (>= 4.2.0)
+    factory_bot (4.8.2)
+      activesupport (>= 3.0.0)
+    factory_bot_rails (4.8.2)
+      factory_bot (~> 4.8.2)
+      railties (>= 3.0.0)
     faraday (1.3.0)
       faraday-net_http (~> 1.0)
       multipart-post (>= 1.2, < 3)
@@ -264,12 +264,13 @@ PLATFORMS
 DEPENDENCIES
   byebug
   comprehension!
-  factory_bot_rails
+  factory_bot_rails (~> 4.8.2)
+  google-cloud-automl
   httparty
   m (~> 1.5.0)
   minitest-stub_any_instance
   pg (= 0.18.4)
-  pry (~> 0.13.1)
+  pry
   pry-byebug
   rails-controller-testing
   redis
