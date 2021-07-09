@@ -16,7 +16,7 @@ import {
   PLAGIARISM,
   ALL
 } from '../../../constants/comprehension';
-import { PromptInterface, ActivityInterface } from '../interfaces/comprehensionInterfaces'
+import { PromptInterface, ActivityInterface, DropdownObjectInterface } from '../interfaces/comprehensionInterfaces'
 
 const quillCheckmark = `/images/green_check.svg`;
 const quillX = '/images/red_x.svg';
@@ -50,24 +50,27 @@ export function getModelsUrl(promptId: string, state: string) {
   return url;
 }
 
-export function getActivitySessionsUrl({ activityId, pageNumber, startDate, endDate }) {
+export function getActivitySessionsUrl({ activityId, pageNumber, startDate, endDate, turkSessionUID }) {
   let url = `session_feedback_histories.json?page=${pageNumber}&activity_id=${activityId}`;
   url = startDate ? url + `&start_date=${startDate}` : url;
   url = endDate ? url + `&end_date=${endDate}` : url;
+  url = turkSessionUID ? url + `&turk_session_uid=${turkSessionUID}` : url;
   return url;
 }
 
-export const getRuleFeedbackHistoriesUrl = ({ activityId, selectedConjunction, startDate, endDate }) => {
+export const getRuleFeedbackHistoriesUrl = ({ activityId, selectedConjunction, startDate, endDate, turkSessionUID }) => {
   let url = `rule_feedback_histories?activity_id=${activityId}&conjunction=${selectedConjunction}`;
   url = startDate ? url + `&start_date=${startDate}` : url;
   url = endDate ? url + `&end_date=${endDate}` : url;
+  url = turkSessionUID ? url + `&turk_session_uid=${turkSessionUID}` : url;
   return url;
 }
 
-export const getRuleFeedbackHistoryUrl = ({ ruleUID, promptId, startDate, endDate }) => {
+export const getRuleFeedbackHistoryUrl = ({ ruleUID, promptId, startDate, endDate, turkSessionUID }) => {
   let url = `rule_feedback_history/${ruleUID}?prompt_id=${promptId}`;
   url = startDate ? url + `&start_date=${startDate}` : url;
   url = endDate ? url + `&end_date=${endDate}` : url;
+  url = turkSessionUID ? url + `&turk_session_uid=${turkSessionUID}` : url;
   return url;
 };
 
@@ -273,7 +276,26 @@ const scoredReadingLevelError = (value: string) => {
   }
 }
 
-export const handlePageFilterClick = ({ startDate, endDate, setStartDate, setEndDate, setShowError, setPageNumber, storageKey }) => {
+export const handlePageFilterClick = ({
+  startDate,
+  endDate,
+  turkSessionUID,
+  setStartDate,
+  setEndDate,
+  setShowError,
+  setPageNumber,
+  setTurkSessionUIDForQuery,
+  storageKey }: {
+    startDate: Date,
+    endDate?: Date,
+    turkSessionUID?: string,
+    setStartDate: (startDate: string) => void,
+    setEndDate: (endDate: string) => void,
+    setTurkSessionUIDForQuery?: (turkSessionUID: string) => void,
+    setShowError: (showError: boolean) => void,
+    setPageNumber: (pageNumber: DropdownObjectInterface) => void,
+    storageKey: string,
+  }) => {
   if(!startDate) {
     setShowError(true);
     return;
@@ -283,10 +305,19 @@ export const handlePageFilterClick = ({ startDate, endDate, setStartDate, setEnd
   const startDateString = startDate.toISOString();
   window.sessionStorage.setItem(`${storageKey}startDate`, startDateString);
   setStartDate(startDateString);
-  if(endDate) {
+  if(!endDate) {
+    // reset to null when user has cleared endDate value
+    setEndDate(null);
+  } else if(endDate)  {
     const endDateString = endDate.toISOString();
     window.sessionStorage.setItem(`${storageKey}endDate`, endDateString);
     setEndDate(endDateString);
+  }
+  if(turkSessionUID === '') {
+    // reset to null so backend doesn't check on empty string
+    setTurkSessionUIDForQuery(null);
+  } else if(turkSessionUID) {
+    setTurkSessionUIDForQuery(turkSessionUID);
   }
 }
 
