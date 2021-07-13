@@ -47,15 +47,15 @@ describe Api::V1::FeedbackHistoriesController, type: :controller do
       expect(1).to eq(FeedbackHistory.count)
     end
 
-    it "should populate metadata['highlight']" do 
-      metadata = { 
+    it "should populate metadata['highlight']" do
+      metadata = {
         "highlight" => [
           { 'text' => 'is',
             'type' => 'response',
             'category' => 'lorem',
-            'character' => 40 } 
+            'character' => 40 }
         ]
-      } 
+      }
 
       post :create, feedback_history: { feedback_session_uid: '1', attempt: 1, optimal: false, used: true,
                                         time: DateTime.now, entry: 'This is the entry provided by the student',
@@ -63,7 +63,7 @@ describe Api::V1::FeedbackHistoriesController, type: :controller do
                                         feedback_type: 'autoML', metadata: metadata }
 
       parsed_response = JSON.parse(response.body)
-      expect(parsed_response['metadata']['highlight'].first.keys).to eq metadata['highlight'].first.keys 
+      expect(parsed_response['metadata']['highlight'].first.keys).to eq metadata['highlight'].first.keys
     end
 
     it "should set prompt_type to Comprehension::Prompt if prompt_id is provided" do
@@ -129,6 +129,7 @@ describe Api::V1::FeedbackHistoriesController, type: :controller do
 
   context "show" do
     setup do
+      @controller.session[:user_id] = nil
       @feedback_history = create(:feedback_history, entry: 'This is the first entry in history')
     end
 
@@ -157,7 +158,7 @@ describe Api::V1::FeedbackHistoriesController, type: :controller do
       get :show, id: feedback_history.id
 
       parsed_response = JSON.parse(response.body)
-      
+
       expect(200).to eq(response.code.to_i)
       expect(prompt.as_json).to eq(parsed_response['prompt'])
     end
