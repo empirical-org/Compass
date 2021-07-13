@@ -140,13 +140,14 @@ func Endpoint(context *gin.Context) {
 	}
 	result := <-returnable_result
 	close(returnable_result)
+	close(api_responses)
 
 	recordFeedback(request_object, result, GetFeedbackHistoryUrl())
 
 	context.Header("Access-Control-Allow-Origin", "*")
 	context.Header("Content-Type", "application/json")
 	context.JSON(200, result)
-	close(api_responses)
+
 }
 // returns a typle of results index and that should be returned.
 func processResults(results map[int]InternalAPIResponse, length int) (int, bool) {
