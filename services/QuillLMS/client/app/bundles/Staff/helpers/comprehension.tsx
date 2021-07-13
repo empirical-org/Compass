@@ -13,9 +13,10 @@ import {
   SCORED_READING_LEVEL,
   IMAGE_LINK,
   IMAGE_ALT_TEXT,
-  PLAGIARISM
+  PLAGIARISM,
+  ALL
 } from '../../../constants/comprehension';
-import { PromptInterface } from '../interfaces/comprehensionInterfaces'
+import { PromptInterface, ActivityInterface } from '../interfaces/comprehensionInterfaces'
 
 const quillCheckmark = `/images/green_check.svg`;
 const quillX = '/images/red_x.svg';
@@ -107,7 +108,7 @@ export const buildBlankPrompt = (conjunction: string) => {
 }
 
 export const buildActivity = ({
-  activityName,
+  activityNotes,
   activityTitle,
   activityScoredReadingLevel,
   activityTargetReadingLevel,
@@ -124,7 +125,7 @@ export const buildActivity = ({
   prompts.forEach(prompt => prompt.max_attempts_feedback = maxFeedback);
   return {
     activity: {
-      name: activityName,
+      notes: activityNotes,
       title: activityTitle,
       parent_activity_id: activityParentActivityId ? parseInt(activityParentActivityId) : null,
       // flag: label,
@@ -173,6 +174,20 @@ export function getPromptForComponent(activityData: any, key: string) {
   prompts.forEach(prompt => promptsHash[prompt.conjunction] = [prompt]);
   promptsHash['all'] = [promptsHash[BECAUSE][0], promptsHash[BUT][0], promptsHash[SO][0]];
   return promptsHash[key];
+}
+
+export function getPromptConjunction(activityData: any, id: number | string) {
+  if(!activityData || activityData && !activityData.activity) {
+    return null;
+  }
+  const { activity } = activityData;
+  const { prompts } = activity;
+  const formattedId = typeof id === 'string' ? parseInt(id) : id;
+  const appliedPrompt = prompts.filter(prompt => prompt.id === formattedId)[0];
+  if(!appliedPrompt) {
+    return ALL;
+  }
+  return appliedPrompt.conjunction;
 }
 
 export function getActivityPrompt({
@@ -375,4 +390,18 @@ export function renderErrorsContainer(formErrorsPresent: boolean, requestErrors:
       })}
     </div>
   )
+}
+
+export const renderHeader = (activityData: {activity: ActivityInterface}, header: string) => {
+  if(!activityData) { return }
+  if(!activityData.activity) { return }
+  const { activity } = activityData;
+  const { title, notes } = activity;
+  return(
+    <section className="comprehension-page-header-container">
+      <h2>{header}</h2>
+      <h3>{title}</h3>
+      <h4>{notes}</h4>
+    </section>
+  );
 }

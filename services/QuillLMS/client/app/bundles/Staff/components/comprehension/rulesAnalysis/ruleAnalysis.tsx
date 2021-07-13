@@ -12,7 +12,7 @@ import { fetchRuleFeedbackHistoriesByRule } from '../../../utils/comprehension/r
 import { fetchConcepts, } from '../../../utils/comprehension/conceptAPIs';
 import { createOrUpdateFeedbackHistoryRating, massCreateOrUpdateFeedbackHistoryRating, } from '../../../utils/comprehension/feedbackHistoryRatingAPIs';
 import { DataTable, Error, Spinner, Input, Tooltip, smallWhiteCheckIcon, } from '../../../../Shared/index';
-import { handlePageFilterClick } from "../../../helpers/comprehension";
+import { handlePageFilterClick, renderHeader } from "../../../helpers/comprehension";
 import { ALL, SCORED, UNSCORED, STRONG, WEAK, RULE_ANALYSIS, RULES_ANALYSIS } from '../../../../../constants/comprehension';
 
 const extractHighlight = (highlightObject) => {
@@ -225,15 +225,8 @@ const RuleAnalysis = ({ match }) => {
     if (!activityData || !responsesData) { return [] }
     return responsesData.filter(filterResponsesByScored).filter(filterResponsesBySearch).map(r => {
       const formattedResponse = {...r,  ...{highlight: extractHighlight(r.highlight)}}
-      const highlightedEntry = r.entry.replace(formattedResponse.highlight, `<strong>${formattedResponse.highlight}</strong>`)
       const strongButton = <button className={r.strength === true ? 'strength-button strong' : 'strength-button'} onClick={() => toggleStrength(r)} tabIndex={-1} type="button">Strong</button> // curriculum developers want to be able to skip these when tab navigating
       const weakButton = <button className={r.strength === false ? 'strength-button weak' : 'strength-button'} onClick={() => toggleWeakness(r)} tabIndex={-1} type="button">Weak</button> // curriculum developers want to be able to skip these when tab navigating
-
-      const tooltip = (<Tooltip
-        key={r.entry}
-        tooltipText={`<div><b>Feedback:</b><p>${ruleData.rule.feedbacks[0].text}</p><br /><b>Notes:</b><p>${ruleData.rule.note}</p></div>`}
-        tooltipTriggerText={<span dangerouslySetInnerHTML={{ __html: highlightedEntry }} key={r.entry} />}
-      />)
 
       if (selectedIds.includes(r.response_id)) {
         formattedResponse.selected = (<button className="quill-checkbox selected" onClick={() => unselectRow(r.response_id)} type="button">
@@ -243,7 +236,7 @@ const RuleAnalysis = ({ match }) => {
         formattedResponse.selected = <button aria-label="Unchecked checkbox" className="quill-checkbox unselected" onClick={() => selectRow(r.response_id)} type="button" />
       }
 
-      formattedResponse.response = tooltip
+      formattedResponse.response = r.entry
       formattedResponse.datetime = moment(r.datetime).format('MM/DD/YYYY')
       formattedResponse.strengthButtons = (<div className="strength-buttons">{strongButton}{weakButton}</div>)
       formattedResponse.viewSessionLink = <Link className="data-link" rel="noopener noreferrer" target="_blank" to={`/activities/${activityId}/activity-sessions/${r.session_uid}/overview`}>View Session</Link>
@@ -307,9 +300,7 @@ const RuleAnalysis = ({ match }) => {
 
   return(
     <div className="rule-analysis-container">
-      <div className="header-container">
-        <h2>Rule: {ruleData.rule.name}</h2>
-      </div>
+      {renderHeader(activityData, `Rule: ${ruleData.rule.name}`)}
       <DataTable
         className="rule-table"
         headers={ruleHeaders}

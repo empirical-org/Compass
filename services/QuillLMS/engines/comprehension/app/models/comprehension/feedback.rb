@@ -7,12 +7,15 @@ module Comprehension
 
     belongs_to :rule, inverse_of: :feedbacks
     has_many :highlights, inverse_of: :feedback, dependent: :destroy
+    has_many :change_logs
 
     accepts_nested_attributes_for :highlights
 
     validates_presence_of :rule
     validates :text, presence: true, length: {minimum: MIN_FEEDBACK_LENGTH, maximum: MAX_FEEDBACK_LENGTH}
     validates :order, numericality: {only_integer: true, greater_than_or_equal_to: 0}, uniqueness: {scope: :rule_id}
+
+    after_save :log_update
 
     def serializable_hash(options = nil)
       options ||= {}
@@ -35,18 +38,22 @@ module Comprehension
       order == 1
     end
 
-    def log_update(user_id, prev_value)
-      if semantic_rule && first_order
-        rule&.prompts&.each do |prompt|
-          log_change(user_id, :update_feedback_1, prompt, {url: rule.url, conjunction: prompt.conjunction}.to_json, nil, prev_value, "#{rule.label.name} | #{rule.name}\n#{text}")
+    private def log_update
+      if text_changed?
+        if semantic_rule && first_order
+          send_change_log(:update_feedback_1)
+        elsif semantic_rule && second_order
+          send_change_log(:update_feedback_2)
+        elsif rule.plagiarism?
+          send_change_log(:update_plagiarism_feedback)
+        elsif rule.regex?
+          send_change_log(:update_regex_feedback)
         end
-      elsif semantic_rule && second_order
-        rule&.prompts&.each do |prompt|
-          log_change(user_id, :update_feedback_2, prompt, {url: rule.url, conjunction: prompt.conjunction}.to_json, nil, prev_value, "#{rule.label.name} | #{rule.name}\n#{text}")
-        end
-      else
-        rule.log_update(user_id, [{feedback: prev_value}], [{feedback: text}])
       end
+    end
+
+    private def send_change_log(action)
+      log_change(nil, action, self, {url: rule.url}.to_json, "text", text_was, text)
     end
   end
 end

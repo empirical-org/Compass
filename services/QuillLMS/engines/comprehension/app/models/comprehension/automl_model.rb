@@ -13,6 +13,7 @@ module Comprehension
     attr_readonly :automl_model_id, :name, :labels
 
     belongs_to :prompt, inverse_of: :automl_models
+    has_many :change_logs
 
     validate :validate_label_associations, if: :active?
 
@@ -21,11 +22,13 @@ module Comprehension
     validates :name, presence: true
     validates :state, inclusion: {in: ['active', 'inactive']}
 
+    after_create :log_creation
+
     def serializable_hash(options = nil)
       options ||= {}
 
       super(options.reverse_merge(
-        only: [:id, :automl_model_id, :name, :labels, :state, :prompt_id, :created_at],
+        only: [:id, :automl_model_id, :notes, :name, :labels, :state, :prompt_id, :created_at],
         methods: [:older_models]
       ))
     end
@@ -40,6 +43,16 @@ module Comprehension
       state == STATE_ACTIVE
     end
 
+    def save_with_session_user(lms_user_id)
+      @lms_user_id = lms_user_id
+      save
+    end
+
+    def activate_with_session_user(lms_user_id)
+      @lms_user_id = lms_user_id
+      activate
+    end
+
     def activate
       AutomlModel.transaction do
         prompt.automl_models.update_all(state: STATE_INACTIVE)
@@ -49,6 +62,7 @@ module Comprehension
           rule.update!(state: Rule::STATE_ACTIVE) if labels.include?(rule.label&.name)
         end
       end
+      log_activation
       self
     rescue StandardError => e
       raise e unless e.is_a?(ActiveRecord::RecordInvalid)
@@ -119,12 +133,12 @@ module Comprehension
       "comprehension/#/activities/#{prompt.activity.id}/semantic-labels/model/#{id}"
     end
 
-    def log_creation(user_id)
-      log_change(user_id, :create_automl, prompt, {url: url, conjunction: prompt.conjunction}.to_json, nil, nil, automl_model_id)
+    private def log_creation
+      log_change(@lms_user_id, :create_automl, self, {url: url}.to_json, nil, nil, nil)
     end
 
-    def log_activation(user_id)
-      log_change(user_id, :activate_automl, prompt, {url: url, conjunction: prompt.conjunction}.to_json, nil, nil, automl_model_id)
+    private def log_activation
+      log_change(@lms_user_id, :activate_automl, self, {url: url}.to_json, nil, nil, nil)
     end
   end
 end

@@ -11,10 +11,13 @@ module Comprehension
     ]
 
     belongs_to :feedback, inverse_of: :highlights
+    has_many :change_logs
 
     validates :text, presence: true, length: {minimum: MIN_TEXT_LENGTH, maximum: MAX_TEXT_LENGTH}
     validates :highlight_type, presence: true, inclusion: {in: TYPES}
     validates :starting_index, numericality: {only_integer: true, greater_than_or_equal_to: 0}
+
+    after_save :log_update
 
     def serializable_hash(options = nil)
       options ||= {}
@@ -36,16 +39,22 @@ module Comprehension
       feedback.order == 1
     end
 
-    def log_update(user_id, prev_value)
-      if semantic_rule && first_order
-        feedback&.rule&.prompts&.each do |prompt|
-          log_change(user_id, :update_highlight_1, prompt, {url: feedback.rule.url, conjunction: prompt.conjunction}.to_json, nil, prev_value, "#{feedback.rule.label.name} | #{feedback.rule.name}\n#{text}")
-        end
-      elsif semantic_rule && second_order
-        feedback&.rule&.prompts&.each do |prompt|
-          log_change(user_id, :update_highlight_2, prompt, {url: feedback.rule.url, conjunction: prompt.conjunction}.to_json, nil, prev_value, "#{feedback.rule.label.name} | #{feedback.rule.name}\n#{text}")
+    private def log_update
+      if text_changed?
+        if semantic_rule && first_order
+          send_change_log(:update_highlight_1)
+        elsif semantic_rule && second_order
+          send_change_log(:update_highlight_2)
+        elsif feedback.rule.plagiarism?
+          send_change_log(:update_plagiarism_highlight)
+        elsif feedback.rule.regex?
+          send_change_log(:update_regex_highlight)
         end
       end
+    end
+
+    private def send_change_log(action)
+      log_change(nil, action, self, {url: feedback.rule.url}.to_json, "text", text_was, text)
     end
   end
 end

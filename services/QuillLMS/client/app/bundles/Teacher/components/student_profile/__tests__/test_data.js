@@ -3,7 +3,7 @@ export const activities = [
     name: "Lesson 1: Missing Subject or Verb Fragments",
     description: "Students learn to identify and correct simple fragments that are missing a single subject or a single verb. This is the first of four lessons in the basic fragments lesson pack.",
     repeatable: false,
-    activity_classification_id:"6",
+    activity_classification_id:6,
     unit_id: 16,
     ua_id: 40,
     unit_created_a: "2020-02-20 16:53:15.136173",
@@ -18,13 +18,14 @@ export const activities = [
     locked: false,
     pinned: true,
     max_percentage: null,
+    finished: false,
     resume_link: 1
   },
   {
     name: "The Travels of Marco Polo",
     description: "",
     repeatable: true,
-    activity_classification_id:"5",
+    activity_classification_id:5,
     unit_id: 7,
     ua_id: 1,
     unit_created_at: "2020-01-16 17:57:24.518561",
@@ -39,13 +40,14 @@ export const activities = [
     locked: false,
     pinned: false,
     max_percentage: null,
+    finished: false,
     resume_link: 0
   },
   {
     name: "Christopher Columbus",
     description: "",
     repeatable: true,
-    activity_classification_id:"5",
+    activity_classification_id:5,
     unit_id: 7,
     ua_id: 2,
     unit_created_at: "2020-01-16 17:57:24.518561",
@@ -60,13 +62,14 @@ export const activities = [
     locked: false,
     pinned: false,
     max_percentage: null,
+    finished: false,
     resume_link: 0
   },
   {
     name: "A, An, The",
     description: "Write ten sentences using the determiners a, an, or the.",
     repeatable: true,
-    activity_classification_id:"2",
+    activity_classification_id:2,
     unit_id: 7,
     ua_id: 10,
     unit_created_a: "2020-01-16 17:57:24.518561",
@@ -81,13 +84,14 @@ export const activities = [
     locked: false,
     pinned: false,
     max_percentage: null,
+    finished: false,
     resume_link: 0
   },
   {
     name: "Magellan",
     description: "",
     repeatable: true,
-    activity_classification_id:"5",
+    activity_classification_id:5,
     unit_id: 7,
     ua_id: 3,
     unit_created_at: "2020-01-16 17:57:24.518561",
@@ -102,13 +106,14 @@ export const activities = [
     locked: false,
     pinned: false,
     max_percentage: null,
+    finished: false,
     resume_link: 0
   },
   {
     name: "Jamestown",
     description: "",
     repeatable: true,
-    activity_classification_id:"5",
+    activity_classification_id:5,
     unit_id: 7,
     ua_id: 4,
     unit_created_at: "2020-01-16 17:57:24.518561",
@@ -123,13 +128,14 @@ export const activities = [
     locked: false,
     pinned: false,
     max_percentage: null,
+    finished: false,
     resume_link: 0
   },
   {
     name: "Age of Exploration: Sailing with the Stars",
     description: "Find and correct the ten errors in this passage.",
     repeatable: true,
-    activity_classification_id:"1",
+    activity_classification_id:1,
     unit_id: 7,
     ua_id: 6,
     unit_created_at: "2020-01-16 17:57:24.518561",
@@ -144,13 +150,14 @@ export const activities = [
     locked: false,
     pinned: false,
     max_percentage: null,
+    finished: false,
     resume_link: 0
   },
   {
     name: "Age of Exploration: The Cape of Good Hope",
     description: "Find and correct the nine errors in this passage.",
     repeatable: true,
-    activity_classification_id:"1",
+    activity_classification_id:1,
     unit_id: 7,
     ua_id: 7,
     unit_created_at: "2020-01-16 17:57:24.518561",
@@ -165,13 +172,14 @@ export const activities = [
     locked: false,
     pinned: false,
     max_percentage: null,
+    finished: false,
     resume_link: 0
   },
   {
     name: "Age of Exploration: Roanoke",
     description: "Find and correct the 6 errors in this passage.",
     repeatable: true,
-    activity_classification_id:"1",
+    activity_classification_id:1,
     unit_id: 7,
     ua_id: 8,
     unit_created_at: "2020-01-16 17:57:24.518561",
@@ -186,13 +194,14 @@ export const activities = [
     locked: false,
     pinned: false,
     max_percentage: null,
+    finished: false,
     resume_link: 0
   },
   {
     name: "A, An",
     description: "Write ten sentences using the articles a or an.",
     repeatable: true,
-    activity_classification_id:"2",
+    activity_classification_id:2,
     unit_id: 7,
     ua_id: 9,
     unit_created_at: "2020-01-16 17:57:24.518561",
@@ -207,13 +216,14 @@ export const activities = [
     locked: false,
     pinned: false,
     max_percentage: 1,
+    finished: true,
     resume_link: 0
   },
   {
     name: "Age of Exploration: Spices",
     description: "Find and correct the 9 errors in this passage.",
     repeatable: true,
-    activity_classification_id:"1",
+    activity_classification_id:1,
     unit_id: 7,
     ua_id: 5,
     unit_created_at: "2020-01-16 17:57:24.518561",
@@ -228,13 +238,14 @@ export const activities = [
     locked: false,
     pinned: false,
     max_percentage: 0.764705882352941,
+    finished: true,
     resume_link: 0
   },
   {
     name: "Lesson 2: Dependent Clause Fragments",
     description: "Students learn to identify and correct basic dependent clause fragments, such as \"when the door opened.\" This is the second of four lessons in the basic fragments lesson pack.",
     repeatable: false,
-    activity_classification_id:"6",
+    activity_classification_id:6,
     unit_id: 16,
     ua_id: 41,
     unit_created_a: "2020-02-20 16:53:15.136173",
@@ -249,13 +260,14 @@ export const activities = [
     locked: true,
     pinned: false,
     max_percentage: null,
+    finished: false,
     resume_link: 0
   },
   {
     name: "Lesson 3: -ing Fragments",
     description: "Students learn to identify and correct basic -ing fragments, such as \"skiing down the mountain.\" This is the third of four lessons in the basic fragments lesson pack.",
     repeatable: false,
-    activity_classification_id:"6",
+    activity_classification_id:6,
     unit_id: 16,
     ua_id: 42,
     unit_created_a: "2020-02-20 16:53:15.136173",
@@ -270,13 +282,14 @@ export const activities = [
     locked: true,
     pinned: false,
     max_percentage: null,
+    finished: false,
     resume_link: 0
   },
   {
     name: "Lesson 4: Fragments Review",
     description: "Students apply what they have learned in basic fragment lessons 1-3 by identifying and correcting fragments within a paragraph. This is the final lesson in the basic fragments lesson pack.",
     repeatable: false,
-    activity_classification_id:"6",
+    activity_classification_id:6,
     unit_id: 16,
     ua_id: 43,
     unit_created_a: "2020-02-20 16:53:15.136173",
@@ -291,6 +304,7 @@ export const activities = [
     locked: true,
     pinned: false,
     max_percentage: null,
+    finished: false,
     resume_link: 0
   }
 ]
@@ -316,6 +330,7 @@ export const categorizedActivities = {
       locked: false,
       pinned: false,
       max_percentage: 1,
+      finished: true,
       resume_link: 0
     }, {
       name: "Age of Exploration: Spices",
@@ -336,6 +351,7 @@ export const categorizedActivities = {
       locked: false,
       pinned: false,
       max_percentage: 0.764705882352941,
+      finished: true,
       resume_link: 0
     }
   ],
@@ -359,6 +375,7 @@ export const categorizedActivities = {
       locked: false,
       pinned: false,
       max_percentage: null,
+      finished: false,
       resume_link: 0
     }, {
       name: "Christopher Columbus",
@@ -379,6 +396,7 @@ export const categorizedActivities = {
       locked: false,
       pinned: false,
       max_percentage: null,
+      finished: false,
       resume_link: 0
     }, {
       name: "A, An, The",
@@ -399,6 +417,7 @@ export const categorizedActivities = {
       locked: false,
       pinned: false,
       max_percentage: null,
+      finished: false,
       resume_link: 0
     }, {
       name: "Magellan",
@@ -419,6 +438,7 @@ export const categorizedActivities = {
       locked: false,
       pinned: false,
       max_percentage: null,
+      finished: false,
       resume_link: 0
     }, {
       name: "Jamestown",
@@ -439,6 +459,7 @@ export const categorizedActivities = {
       locked: false,
       pinned: false,
       max_percentage: null,
+      finished: false,
       resume_link: 0
     }, {
       name: "Age of Exploration: Sailing with the Stars",
@@ -459,6 +480,7 @@ export const categorizedActivities = {
       locked: false,
       pinned: false,
       max_percentage: null,
+      finished: false,
       resume_link: 0
     }, {
         name: "Age of Exploration: The Cape of Good Hope",
@@ -479,6 +501,7 @@ export const categorizedActivities = {
         locked: false,
         pinned: false,
         max_percentage: null,
+        finished: false,
         resume_link: 0
       }, {
           name: "Age of Exploration: Roanoke",
@@ -499,6 +522,7 @@ export const categorizedActivities = {
           locked: false,
           pinned: false,
           max_percentage: null,
+          finished: false,
           resume_link: 0
         }
       ]

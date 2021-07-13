@@ -11,6 +11,7 @@ module Comprehension
     ]
 
     belongs_to :rule, inverse_of: :regex_rules
+    has_many :change_logs, class_name: "::ChangeLog"
 
     before_validation :set_default_case_sensitivity, on: :create
     before_save :validate_regex
@@ -19,6 +20,8 @@ module Comprehension
     validates :regex_text, presence: true, length: {maximum: MAX_REGEX_TEXT_LENGTH}
     validates :case_sensitive, inclusion: CASE_SENSITIVE_ALLOWED_VALUES
     validates :sequence_type, inclusion: SEQUENCE_TYPES
+
+    after_save :log_update
 
     def serializable_hash(options = nil)
       options ||= {}
@@ -32,6 +35,10 @@ module Comprehension
       # for "incorrect" type regex rules, we want to "fail" if they have the regex. for "required" type regex
       # rules, we want to "fail" when they dont have the regex.
       sequence_type == TYPE_INCORRECT ? regex_match(entry) : !regex_match(entry)
+    end
+
+    def incorrect_sequence?
+      sequence_type == TYPE_INCORRECT
     end
 
     private def regex_match(entry)
@@ -52,8 +59,10 @@ module Comprehension
       end
     end
 
-    def log_update(user_id, prev_value)
-      rule.log_update(user_id, [{regex_text: prev_value}], [{regex_text: regex_text}])
+    def log_update
+      if regex_text_changed?
+        log_change(nil, :update_regex_text, self, {url: rule.url}.to_json, "regex_text", regex_text_was, regex_text)
+      end
     end
   end
 end

@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210603191300) do
+ActiveRecord::Schema.define(version: 20210713204109) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,16 +30,15 @@ ActiveRecord::Schema.define(version: 20210603191300) do
     t.string   "action",              null: false
     t.integer  "changed_record_id",   null: false
     t.string   "changed_record_type", null: false
-    t.integer  "user_id",             null: false
+    t.integer  "user_id"
     t.string   "changed_attribute"
     t.string   "previous_value"
     t.string   "new_value"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["changed_record_id"], name: "index_change_logs_on_changed_record_id", using: :btree
+    t.index ["user_id"], name: "index_change_logs_on_user_id", using: :btree
   end
-
-  add_index "change_logs", ["changed_record_id"], name: "index_change_logs_on_changed_record_id", using: :btree
-  add_index "change_logs", ["user_id"], name: "index_change_logs_on_user_id", using: :btree
 
   create_table "comprehension_activities", force: :cascade do |t|
     t.string   "title",              limit: 100
@@ -49,10 +47,9 @@ ActiveRecord::Schema.define(version: 20210603191300) do
     t.string   "scored_level",       limit: 100
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
-    t.string   "name"
+    t.string   "notes"
+    t.index ["parent_activity_id"], name: "index_comprehension_activities_on_parent_activity_id", using: :btree
   end
-
-  add_index "comprehension_activities", ["parent_activity_id"], name: "index_comprehension_activities_on_parent_activity_id", using: :btree
 
   create_table "comprehension_automl_models", force: :cascade do |t|
     t.string   "automl_model_id",              null: false
@@ -62,6 +59,7 @@ ActiveRecord::Schema.define(version: 20210603191300) do
     t.string   "state",                        null: false
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
+    t.text     "notes",           default: ""
   end
 
   create_table "comprehension_feedbacks", force: :cascade do |t|
@@ -71,9 +69,8 @@ ActiveRecord::Schema.define(version: 20210603191300) do
     t.integer  "order",       null: false
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.index ["rule_id", "order"], name: "index_comprehension_feedbacks_on_rule_id_and_order", unique: true, using: :btree
   end
-
-  add_index "comprehension_feedbacks", ["rule_id", "order"], name: "index_comprehension_feedbacks_on_rule_id_and_order", unique: true, using: :btree
 
   create_table "comprehension_highlights", force: :cascade do |t|
     t.integer  "feedback_id",    null: false
@@ -98,18 +95,16 @@ ActiveRecord::Schema.define(version: 20210603191300) do
     t.datetime "updated_at",                  null: false
     t.string   "image_link"
     t.string   "image_alt_text", default: ""
+    t.index ["activity_id"], name: "index_comprehension_passages_on_activity_id", using: :btree
   end
-
-  add_index "comprehension_passages", ["activity_id"], name: "index_comprehension_passages_on_activity_id", using: :btree
 
   create_table "comprehension_plagiarism_texts", force: :cascade do |t|
     t.integer  "rule_id",    null: false
     t.string   "text",       null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["rule_id"], name: "index_comprehension_plagiarism_texts_on_rule_id", unique: true, using: :btree
   end
-
-  add_index "comprehension_plagiarism_texts", ["rule_id"], name: "index_comprehension_plagiarism_texts_on_rule_id", unique: true, using: :btree
 
   create_table "comprehension_prompts", force: :cascade do |t|
     t.integer  "activity_id"
@@ -119,19 +114,17 @@ ActiveRecord::Schema.define(version: 20210603191300) do
     t.text     "max_attempts_feedback"
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
+    t.index ["activity_id"], name: "index_comprehension_prompts_on_activity_id", using: :btree
   end
-
-  add_index "comprehension_prompts", ["activity_id"], name: "index_comprehension_prompts_on_activity_id", using: :btree
 
   create_table "comprehension_prompts_rules", force: :cascade do |t|
     t.integer  "prompt_id",  null: false
     t.integer  "rule_id",    null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["prompt_id", "rule_id"], name: "index_comprehension_prompts_rules_on_prompt_id_and_rule_id", unique: true, using: :btree
+    t.index ["rule_id"], name: "index_comprehension_prompts_rules_on_rule_id", using: :btree
   end
-
-  add_index "comprehension_prompts_rules", ["prompt_id", "rule_id"], name: "index_comprehension_prompts_rules_on_prompt_id_and_rule_id", unique: true, using: :btree
-  add_index "comprehension_prompts_rules", ["rule_id"], name: "index_comprehension_prompts_rules_on_rule_id", using: :btree
 
   create_table "comprehension_regex_rules", force: :cascade do |t|
     t.string   "regex_text",     limit: 200,                       null: false
@@ -140,9 +133,8 @@ ActiveRecord::Schema.define(version: 20210603191300) do
     t.datetime "updated_at",                                       null: false
     t.integer  "rule_id"
     t.text     "sequence_type",              default: "incorrect", null: false
+    t.index ["rule_id"], name: "index_comprehension_regex_rules_on_rule_id", using: :btree
   end
-
-  add_index "comprehension_regex_rules", ["rule_id"], name: "index_comprehension_regex_rules_on_rule_id", using: :btree
 
   create_table "comprehension_rules", force: :cascade do |t|
     t.string   "uid",         null: false
@@ -156,19 +148,17 @@ ActiveRecord::Schema.define(version: 20210603191300) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.string   "state",       null: false
+    t.index ["uid"], name: "index_comprehension_rules_on_uid", unique: true, using: :btree
   end
-
-  add_index "comprehension_rules", ["uid"], name: "index_comprehension_rules_on_uid", unique: true, using: :btree
 
   create_table "comprehension_turking_round_activity_sessions", force: :cascade do |t|
     t.integer  "turking_round_id"
     t.string   "activity_session_uid"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
+    t.index ["activity_session_uid"], name: "comprehension_turking_sessions_activity_uid", unique: true, using: :btree
+    t.index ["turking_round_id"], name: "comprehension_turking_sessions_turking_id", using: :btree
   end
-
-  add_index "comprehension_turking_round_activity_sessions", ["activity_session_uid"], name: "comprehension_turking_sessions_activity_uid", unique: true, using: :btree
-  add_index "comprehension_turking_round_activity_sessions", ["turking_round_id"], name: "comprehension_turking_sessions_turking_id", using: :btree
 
   create_table "comprehension_turking_rounds", force: :cascade do |t|
     t.integer  "activity_id"
@@ -176,10 +166,13 @@ ActiveRecord::Schema.define(version: 20210603191300) do
     t.datetime "expires_at"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.index ["activity_id"], name: "index_comprehension_turking_rounds_on_activity_id", using: :btree
+    t.index ["uuid"], name: "index_comprehension_turking_rounds_on_uuid", unique: true, using: :btree
   end
 
-  add_index "comprehension_turking_rounds", ["activity_id"], name: "index_comprehension_turking_rounds_on_activity_id", using: :btree
-  add_index "comprehension_turking_rounds", ["uuid"], name: "index_comprehension_turking_rounds_on_uuid", unique: true, using: :btree
+  create_table "users", force: :cascade do |t|
+    t.string "name"
+  end
 
   add_foreign_key "comprehension_automl_models", "comprehension_prompts", column: "prompt_id"
   add_foreign_key "comprehension_highlights", "comprehension_feedbacks", column: "feedback_id", on_delete: :cascade
