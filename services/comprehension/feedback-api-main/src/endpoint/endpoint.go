@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"fmt"
-	"sync"
 	"time"
 	"os"
 	"net/http/httputil"
@@ -15,8 +14,7 @@ import (
 )
 
 const automl_index = 3
-
-var wg sync.WaitGroup
+const api_count = 8
 
 // you can't use const for structs, so this is the closest thing we can get for this value
 var default_api_response = APIResponse{
@@ -59,7 +57,7 @@ func GetOpinionDomain() (string) {
 	return opinion_domain
 }
 
-func AssembleUrls() ([8]string) {
+func AssembleUrls() ([api_count]string) {
 	lms_domain := GetLMSDomain()
 	opinion_domain := GetOpinionDomain()
 
@@ -107,15 +105,14 @@ func Endpoint(context *gin.Context) {
 
 	results := map[int]InternalAPIResponse{}
 
-	channel := make(chan InternalAPIResponse)
+	api_responses := make(chan InternalAPIResponse, api_count)
+	returnable_result := make(chan APIResponse, 1)
 
 	for priority, url := range urls {
-		go getAPIResponse(url, priority, request_body, channel)
+		go getAPIResponse(url, priority, request_body, api_responses)
 	}
 
-	var returnable_result APIResponse
-
-	for response := range channel {
+	for response := range api_responses {
 		results[response.Priority] = response
 		return_index, finished := processResults(results, len(urls))
 
@@ -127,16 +124,13 @@ func Endpoint(context *gin.Context) {
 			// even for success cases, which means that if everything is working correctly,
 			// this only comes up during the initial Turking process
 			if !results[return_index].Error {
-				returnable_result = results[return_index].APIResponse
+				returnable_result <- results[return_index].APIResponse
 			} else {
-				returnable_result = default_api_response
+				returnable_result <- default_api_response
 			}
 			break
 		}
 	}
-
-	// TODO make this a purely async task instead of coroutine that waits to finish
-	wg.Add(1)
 
 	var request_object APIRequest
 	// TODO convert the 'feedback' bytes and combine with incoming_params bytes
@@ -144,14 +138,15 @@ func Endpoint(context *gin.Context) {
 	if err := json.NewDecoder(bytes.NewReader(request_body)).Decode(&request_object); err != nil {
 		return
 	}
+	result := <-returnable_result
+	close(returnable_result)
 
-	go recordFeedback(request_object, returnable_result, GetFeedbackHistoryUrl())
+	recordFeedback(request_object, result, GetFeedbackHistoryUrl())
 
 	context.Header("Access-Control-Allow-Origin", "*")
 	context.Header("Content-Type", "application/json")
-	context.JSON(200, returnable_result)
-
-	wg.Wait()
+	context.JSON(200, result)
+	close(api_responses)
 }
 // returns a typle of results index and that should be returned.
 func processResults(results map[int]InternalAPIResponse, length int) (int, bool) {
@@ -233,7 +228,6 @@ func buildFeedbackHistory(request_object APIRequest, feedback APIResponse, used 
 }
 
 func recordFeedback(incoming_params APIRequest, feedback APIResponse, feedback_history_url string) {
-	defer wg.Done() // mark task as done in WaitGroup on return
 
 	history := buildFeedbackHistory(incoming_params, feedback, true, time.Now())
 
