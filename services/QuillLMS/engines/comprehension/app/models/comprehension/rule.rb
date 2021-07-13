@@ -160,7 +160,7 @@ module Comprehension
 
     private def log_update
       return if rule_type == TYPE_OPINION
-      changes.except(:"updated_at").each do |key, value|
+      changes.except("updated_at".to_sym).each do |key, value|
         log_change(nil, UPDATE_ACTIONS[rule_type.to_sym], self, {url: url}.to_json, key, value[0], value[1])
       end
     end
